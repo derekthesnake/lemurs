@@ -157,6 +157,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if let Some(cmd) = cli.command {
         match cmd {
+	    Commands::ShowConfig => {
+		println!("{}", &config)
+	    }
             Commands::Envs => {
                 let envs = post_login::get_envs(&config);
 

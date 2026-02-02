@@ -2,7 +2,7 @@ use crossterm::event::KeyCode;
 use log::error;
 use ratatui::style::{Color, Modifier};
 use serde::{de::Error, Deserialize};
-use std::fmt::Display;
+use std::fmt;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
@@ -167,6 +167,11 @@ macro_rules! toml_config_struct {
                 )+
             }
         }
+	impl fmt::Display for $struct_name {
+	    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		write!(f, "{:?}", self)
+	    }
+	}
 
         impl $rough_name {
             pub fn into_partial(self, variables: &Variables) -> Result<$partial_struct_name, VariableInsertionError> {
@@ -519,7 +524,7 @@ enum VariableInsertionError {
     },
 }
 
-impl Display for VariableInsertionError {
+impl fmt::Display for VariableInsertionError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             VariableInsertionError::ImpossibleVariableCast {

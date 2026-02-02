@@ -17,6 +17,7 @@ OPTIONS:
     -h, --help                Print help information
         --no-log
         --preview
+        --show-config         Print the parsed configuration to be used
         --tty <N>             Override the configured TTY number
         --xsessions <DIR>     Override the path to /usr/share/xsessions
         --wlsessions <DIR>    Override the path to /usr/share/wayland-sessions
@@ -49,6 +50,7 @@ pub enum Commands {
     Envs,
     Cache,
     Help,
+    ShowConfig,
     Version,
 }
 
@@ -101,6 +103,7 @@ impl Cli {
 
                 (_, "--preview") => cli.preview = true,
                 (_, "--no-log") => cli.no_log = true,
+		(_, "--show-config") => cli.command = Some(Commands::ShowConfig),
                 (_, "--tty") => {
                     let (_, arg) = args.next().ok_or(CliError::MissingArgument("tty"))?;
                     let arg = arg.parse().map_err(|_| CliError::InvalidTTY)?;
