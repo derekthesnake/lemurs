@@ -169,7 +169,9 @@ macro_rules! toml_config_struct {
         }
 	impl fmt::Display for $struct_name {
 	    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		write!(f, "{:?}", self)
+		writeln!(f, "[{}]", stringify!($struct_name));
+		$(writeln!(f, "{} = {}", stringify!($field_name), self.$field_name);)+
+		writeln!(f, "done")
 	    }
 	}
 
@@ -392,6 +394,15 @@ pub enum ShellLoginFlag {
     #[serde(rename = "long")]
     Long,
 }
+impl fmt::Display for ShellLoginFlag {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+	match &self {
+	    None => "none",
+	    Short => "short",
+	    Long => "long"
+	}
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SwitcherVisibility {
@@ -421,6 +432,15 @@ impl<'de> Deserialize<'de> for SwitcherVisibility {
                 Self::Keybind(keycode)
             }
         })
+    }
+}
+impl fmt::Display for SwitcherVisibility {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+	match &self {
+	    Visible => "visible",
+	    Hidden => "hidden",
+	    Self::Keybind(key) => key,
+	}
     }
 }
 
